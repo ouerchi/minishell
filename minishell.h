@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:26 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/23 15:21:06 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/04/26 17:56:29 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,5 +189,22 @@ void			process_char(char *rl, int *i, t_token **lst, t_variable *var);
 /*utils*/
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
-
+/*environment*/
+void	init_env(t_config *config, char **env);
+void	check_env(t_config *config);
+void	update_env(t_config *config);
+char	**lst_to_array(t_env *env_lst);
+void	free_array(char **arr);
+void	ft_setenv(t_config *config, char *name, char *value);
+int	update_env_value(t_env **env, char *name, char *value);
+char	*trim_free(char *str);
+char	*ft_getenv(char **env, char *env_name);
+char	**get_env(char **real_env);
+int	fail_check(char ***env, int i);
+t_env	*get_env_lst(t_config *config);
+void	append_env_lst(t_env **lst, char *variable);
+void	free_lst(t_env **lst);
+void	free_env_lst(t_env *env);
+char	**ft_split_var(char *variable);
+char	*ft_itoa(int n);
 #endif

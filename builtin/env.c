@@ -1,27 +1,34 @@
-#include "../libft/libft.h"
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdbool.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/26 17:59:02 by mouerchi          #+#    #+#             */
+/*   Updated: 2025/04/26 17:59:12 by mouerchi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-int	ft_env(env_lst)
-{
-	int	i;
-	char *my_env;
 
-	if (!env || !*env)
-		return (0);
-	i = 0;
-	while(env[i])
-	{
-		my_env = ft_strchr((const char *)env[i], '=');
-		if (!my_env)
-		{
-			i++;
-			continue;
-		}
-		printf("%s\n", env[i]);
-		i++;
-	}
-	return (0);
-}
+// int	ft_env(env_lst)
+// {
+// 	int	i;
+// 	char *my_env;
+
+// 	if (!env || !*env)
+// 		return (0);
+// 	i = 0;
+// 	while(env[i])
+// 	{
+// 		my_env = ft_strchr((const char *)env[i], '=');
+// 		if (!my_env)
+// 		{
+// 			i++;
+// 			continue;
+// 		}
+// 		printf("%s\n", env[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }

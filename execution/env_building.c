@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 15:38:47 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/04/26 15:38:48 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/04/26 16:13:08 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,13 +222,6 @@ int	update_env_value(t_env **env, char *name, char *value)
 
 }
 
-// function to add a variable to the env
-void	add_env_variable(t_env **env, char *variable)
-{
-	t_env	*node;
-	t_env	*current;
-	char	**splited_var
-}
 
 void	ft_setenv(t_config *config, char *name, char *value)
 {
@@ -265,11 +258,40 @@ void	free_array(char **arr)
 	free(arr);
 }
 
+char	**lst_to_array(t_env *env_lst)
+{
+	t_env	*current;
+	int		i;
+	char	**env;
+	
+	current = env_lst;
+	i = 0;
+	while (current)
+	{
+		i++;
+		current = current->next;
+	}
+	if (!i)
+		return (NULL);
+	env = (char **)malloc(sizeof(char *) * i + 1);
+	if (!env)
+		return (NULL);
+	i = 0;
+	while (env_lst)
+	{
+		env[i] = ft_strdup(env_lst->variable);	
+		env_lst = env_lst->next;
+		i++;
+	}
+	env[i] = NULL;
+	return (env);
+}
+
 void	update_env(t_config *config)
 {
 	char	**new_env;
 
-	new_env = list_to_array(config->env_lst);
+	new_env = lst_to_array(config->env_lst);
 	if (!new_env)
 		return ;
 	free_array(config->env);
