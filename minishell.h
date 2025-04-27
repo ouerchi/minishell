@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:26 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/26 17:56:29 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:01:16 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 #include <stdbool.h>
 #define _POSIX_C_SOURCE 200809L
 #define _XOPEN_SOURCE 700
+
+# define CD_HOME 0
 
 
 typedef struct s_list
@@ -207,4 +209,5 @@ void	free_lst(t_env **lst);
 void	free_env_lst(t_env *env);
 char	**ft_split_var(char *variable);
 char	*ft_itoa(int n);
+int	ft_atoi(const char *str);
 #endif

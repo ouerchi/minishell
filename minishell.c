@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:20 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/22 12:03:18 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/04/26 19:25:24 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	minishell_loop(char **env)
 	t_token     *token;
 	t_state_loop state_loop;
     
-    // init_env(&config, env);
+    init_env(&config, env);
 	while(1)
     {
         rl = readline("\x1b[32mminishell\x1b[34m-\x1b[31m$ \x1b[37m");

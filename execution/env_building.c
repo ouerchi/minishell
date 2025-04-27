@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 15:38:47 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/04/26 16:13:08 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/04/26 19:29:55 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	append_env_lst(t_env **lst, char *variable)
 
 	if (!lst || !variable)
 		return ;
+
 	node = (t_env *)malloc(sizeof(t_env));
 	if (!node)
 		return (free_lst(lst));
@@ -89,6 +90,9 @@ void	append_env_lst(t_env **lst, char *variable)
 		node->name = ft_strdup(variable);
 		node->value = NULL;
 	}
+	node->variable = ft_strdup(variable);
+	node->next = NULL;
+	free(splited_var);
 	if (!(*lst))
 	{
 		*lst = node;
@@ -108,6 +112,7 @@ t_env	*get_env_lst(t_config *config)
 	t_env	*lst;
 
 	env = config->env;
+	lst = NULL;
 	i = 0;
 	while (env[i])
 	{
@@ -152,7 +157,7 @@ char	**get_env(char **real_env)
 	i = -1;
 	while (++i < count)
 	{
-		env[i] = real_env[i];
+		env[i] = ft_strdup(real_env[i]);
 		if (!fail_check(&env, i))
 			return (NULL);
 	}
@@ -197,7 +202,6 @@ char	*trim_free(char *str)
 int	update_env_value(t_env **env, char *name, char *value)
 {
 	char	*variable;
-
 	if (*env)
 	{
 		if (ft_strlen(name) == ft_strlen((*env)->name) && !ft_strncmp(name, (*env)->name, ft_strlen(name)))
@@ -211,13 +215,14 @@ int	update_env_value(t_env **env, char *name, char *value)
 			variable = ft_strdup(name);
 			variable = ft_strjoin(variable, "=");
 			variable = ft_strjoin(variable, value);
-			(*env)->variable = variable;
+			(*env)->variable = ft_strdup(variable);
 			free(value);
 			return (1);
 		}
 		else
 			return (update_env_value(&((*env)->next), name, value));
 	}
+
 	return (0);
 
 }
@@ -252,6 +257,7 @@ void	free_array(char **arr)
 		return ;
 	while (arr[i])
 	{
+		printf("%p\n", arr[0]);
 		free(arr[i]);
 		i++;
 	}
@@ -272,11 +278,11 @@ char	**lst_to_array(t_env *env_lst)
 		current = current->next;
 	}
 	if (!i)
-		return (NULL);
-	env = (char **)malloc(sizeof(char *) * i + 1);
+	return (NULL);
+	env = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!env)
 		return (NULL);
-	i = 0;
+		i = 0;
 	while (env_lst)
 	{
 		env[i] = ft_strdup(env_lst->variable);	
@@ -290,7 +296,6 @@ char	**lst_to_array(t_env *env_lst)
 void	update_env(t_config *config)
 {
 	char	**new_env;
-
 	new_env = lst_to_array(config->env_lst);
 	if (!new_env)
 		return ;
@@ -302,26 +307,25 @@ void	check_env(t_config *config)
 {
 	char	*tmp;
 	int		shell_level;
-
 	if (!ft_getenv(config->env, "PATH"))
-		ft_setenv(config, "PATH",
-			ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."));
-	if (!ft_getenv(config->env, "SHLVL"))
+	ft_setenv(config, "PATH",
+		ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."));
+		if (!ft_getenv(config->env, "SHLVL"))
 		ft_setenv(config, "SHLVL", ft_strdup("1"));
-	else
-	{
-		tmp = ft_getenv(config->env, "SHLVL");
-		shell_level = ft_atoi(tmp) + 1;
-		tmp = ft_itoa(shell_level);
+		else
+		{
+			tmp = ft_getenv(config->env, "SHLVL");
+			shell_level = ft_atoi(tmp) + 1;
+			tmp = ft_itoa(shell_level);
 		ft_setenv(config, "SHLVL", tmp);
 	}
 	if (!ft_getenv(config->env, "_"))
-		ft_setenv(config, "_", ft_strdup("/usr/bin/env"));
+	ft_setenv(config, "_", ft_strdup("/usr/bin/env"));
 	if (!ft_getenv(config->env, "PWD"))
 	{
 		tmp = NULL;
 		tmp = getcwd(tmp, 0);
-		ft_setenv(config, "PWD", tmp);
+		ft_setenv(config, "PWD", ft_strdup(tmp));
 	}
 	update_env(config);
 
@@ -329,8 +333,10 @@ void	check_env(t_config *config)
 
 void	init_env(t_config *config, char **env)
 {
+	// config->env = env;
 	config->env = get_env(env);
 	config->env_lst = NULL;
 	config->env_lst = get_env_lst(config);
+	
 	check_env(config);
 }
