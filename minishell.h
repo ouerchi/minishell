@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:26 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/27 11:01:16 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/07 13:46:48 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdbool.h>
+#include <errno.h>
+#include <sys/wait.h>
 #define _POSIX_C_SOURCE 200809L
 #define _XOPEN_SOURCE 700
 
@@ -95,15 +97,6 @@ typedef struct s_variable {
     struct s_variable *next;
 } t_variable;
 
-typedef struct s_parse
-{
-	char			*cmd_name;
-	char			**args;
-	int				builtins;
-	t_files			*file;
-	t_variable		*var;
-	struct s_parse	*next;
-}	t_parse;
 
 typedef struct s_env
 {
@@ -113,24 +106,30 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-
-typedef struct s_process
+typedef struct s_parse
 {
-	int saved_fd;
-	int pipe[2];
-	int cmd_idx;
-	char *path;
-	// t_config	*exec_cmd;
-}	t_process;
+	char			*cmd_name;
+	char			**args;
+	int				builtins;
+	t_files			*file;
+	int 			infile;
+	int				outfile;
+	t_variable		*var;
+	struct s_parse	*next;
+}	t_parse;
+
 
 typedef	struct s_config
 {
 	t_parse *cmd;
-	char	**env;
 	t_env	*env_lst;
+	char	**env;
 	bool	fail;
 	bool	env_exist;
-	
+	int saved_fd;
+	int pipe[2];
+	int cmd_idx;
+	char			*path;
 }	t_config;
 
 int				is_numeric(char *str);
@@ -191,6 +190,7 @@ void			process_char(char *rl, int *i, t_token **lst, t_variable *var);
 /*utils*/
 void	ft_putchar_fd(char c, int fd);
 void	ft_putstr_fd(char *s, int fd);
+char	**ft_split(char const *s, char *delims);
 /*environment*/
 void	init_env(t_config *config, char **env);
 void	check_env(t_config *config);
@@ -210,4 +210,9 @@ void	free_env_lst(t_env *env);
 char	**ft_split_var(char *variable);
 char	*ft_itoa(int n);
 int	ft_atoi(const char *str);
+
+
+
+void	execution(t_config *config);
+void	execute_cmd(t_config *config, t_parse *cmd);
 #endif

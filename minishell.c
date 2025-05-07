@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:20 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/26 19:25:24 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:14:17 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ t_state_loop ft_state_loop(t_token *token, char *rl, t_config *config)
     else
     {
         ft_print_list(config->cmd);
-        free_parse(config->cmd);
+        execution(config);
+        // free_parse(config->cmd);
         return (CONTINUE);
     }
 }
