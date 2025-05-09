@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:55:42 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/04/26 17:57:00 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/06 23:13:44 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,6 @@ static int	converte(char *ascii, int n, int i)
 	return (i + 1);
 }
 
-static char	*minval_orzero(int n)
-{
-	if (n == 0)
-		return (ft_strdup("0"));
-	return (ft_strdup("-2147483648"));
-}
-
 char	*ft_itoa(int n)
 {
 	char	*ascii;
@@ -54,7 +47,12 @@ char	*ft_itoa(int n)
 
 	i = 0;
 	if (n == -2147483648 || n == 0)
-		return (minval_orzero(n));
+	{
+		if (n == 0)
+			return (ft_strdup("0"));
+		else
+			return (ft_strdup("-2147483648"));
+	}
 	ascii = malloc(digit_count(n) + 1);
 	if (ascii == NULL)
 		return (NULL);
@@ -67,4 +65,41 @@ char	*ft_itoa(int n)
 	i = converte(ascii, n, i);
 	ascii[i] = '\0';
 	return (ascii);
+}
+
+static long	calc_result(long tmp, long result, char c, int sign)
+{
+	tmp = (result * 10) + (c - 48);
+	if (tmp < result && sign == 1)
+		return (-1);
+	else if (tmp < result && sign == -1)
+		return (0);
+	return (tmp);
+}
+
+int	ft_atoi(const char *str)
+{
+	int		i;
+	int		sign;
+	long	result;
+	long	tmp;
+
+	i = 0;
+	sign = 1;
+	result = 0;
+	tmp = 0;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+	}
+	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	{
+		result = calc_result(tmp, result, str[i], sign);
+		i++;
+	}
+	return (sign * result);
 }

@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 16:36:44 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:09:07 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/06 23:27:56 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ size_t	ft_strlen(char *str)
 	size_t	i;
 
 	i = 0;
+	if (!str)
+		return (0);
 	while (str[i])
 		i++;
 	return (i);
@@ -60,7 +62,7 @@ char	*ft_strdup(char *s)
 
 int	is_numeric(char *str)
 {
-	int i;
+	int	i;
 
 	if (!str || *str == '\0')
 		return (0);
@@ -69,7 +71,7 @@ int	is_numeric(char *str)
 		i++;
 	while (str[i])
 	{
-		if(str[i] < '0' || str[i] > '9')
+		if (str[i] < '0' || str[i] > '9')
 			return (0);
 		i++;
 	}

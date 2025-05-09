@@ -1,14 +1,26 @@
 
-
-
 #include "../minishell.h"
 
-void	print_error(char *msg)
+void	error_handling(char *cmd, char *msg)
 {
+	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(msg, 2);
-	ft_putstr_fd(": command not found", 2);
-	return ;
+	ft_putstr_fd("\n", 2);
+	exit(1);
 }
+
+// void	free_array(char **str)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		free(str[i]);
+// 		i++;
+// 	}
+// 	free(str);
+// }
 char	*find_path(char *cmd_name, char **env)
 {
 	char **path_dirs;
@@ -30,32 +42,30 @@ char	*find_path(char *cmd_name, char **env)
 		free(cmd_dir);
 		i++;
 	}
-	return (free(path_dirs), NULL);
+	return (free_array(path_dirs), cmd_name);
 }
 
-void	*get_path(t_config *config, t_parse *cmd)
+void	get_path(t_config *config, t_parse *cmd)
 {
 	if (cmd->cmd_name[0] == '/' || (cmd->cmd_name[0] == '.' && (cmd->cmd_name[1] == '/' || cmd->cmd_name[1] == '.')))
 	{
 		if (access(cmd->cmd_name, F_OK) != 0)
-			print_error(cmd->cmd_name);
+			error_handling(cmd->cmd_name, ": No such file or directory");
 		if (access(cmd->cmd_name, X_OK) != 0)
-			print_error(cmd->cmd_name);
+			error_handling(cmd->cmd_name, ": Permission denied");
 		config->path = ft_strdup(cmd->cmd_name);
 	}
 	else
 	{
 		config->path = find_path(cmd->cmd_name, config->env);
 		if (!config->path)
-			return (NULL);
+			error_handling(cmd->cmd_name, ": No such file or directory");
 	}
-	return (NULL);
 }
-
 
 void	execute_cmd(t_config *config, t_parse *cmd)
 {
-
 	get_path(config, cmd);
 	execve(config->path, cmd->args, config->env);
+	error_handling(cmd->args[0], ": Command not found");
 }

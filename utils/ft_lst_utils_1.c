@@ -6,23 +6,11 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 01:18:57 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:10:45 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/06 23:24:41 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-t_list	*ft_lstnew(void *content)
-{
-	t_list	*new;
-
-	new = (t_list *)malloc(sizeof(t_list));
-	if (!new)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
-}
 
 t_token	*ft_token_new(t_token_type type, void *content)
 {
@@ -32,9 +20,9 @@ t_token	*ft_token_new(t_token_type type, void *content)
 	if (!new)
 		return (NULL);
 	if (content)
-        new->value = ft_strdup(content);
-    else
-        new->value = NULL;
+		new->value = ft_strdup(content);
+	else
+		new->value = NULL;
 	new->type = type;
 	new->next = NULL;
 	return (new);
@@ -42,7 +30,7 @@ t_token	*ft_token_new(t_token_type type, void *content)
 
 t_files	*ft_files_new(char *name, char *type)
 {
-	t_files *file;
+	t_files	*file;
 
 	file = (t_files *)malloc(sizeof(t_files));
 	if (!file)
@@ -68,16 +56,25 @@ t_parse	*ft_parse_new(void)
 	return (new);
 }
 
-int	ft_lstsize(t_list *lst)
+t_token	*ft_lstlast_token(t_token *lst)
+{
+	if (!lst)
+		return (NULL);
+	while (lst->next != NULL)
+		lst = lst->next;
+	return (lst);
+}
+
+int	ft_lstsize_token(t_token *token)
 {
 	int		count;
-	t_list	*head;
+	t_token	*head;
 
-	head = lst;
+	head = token;
 	count = 1;
-	if (!lst)
+	if (!token)
 		return (0);
-	while (head->next != NULL)
+	while (head != NULL && head->type == T_WORD)
 	{
 		count++;
 		head = head->next;

@@ -6,45 +6,72 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:23:31 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 14:45:33 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/07 16:21:09 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_handle_words(char *rl, int *i)
+char	*ft_handle_buff(char *rl, int *i)
 {
-	char *buff;
-	char *temp;
-	char quote;
+	char	*buff;
+	char	quote;
 
-	quote = 0;
 	buff = NULL;
-    while (rl[*i])
-    {
-		if (!quote && (rl[*i] == '\'' || rl[*i] == '"'))
+	while (rl[*i] && !ft_strchr(" >|<", rl[*i]))
+	{
+		if (rl[*i] == '\'' || rl[*i] == '"')
 		{
 			quote = rl[*i];
+			buff = ft_strjoin_char(buff, quote);
 			(*i)++;
-			continue;
+			while (rl[*i] && rl[*i] != quote)
+				buff = ft_strjoin_char(buff, rl[(*i)++]);
+			if (rl[*i] == quote)
+			{
+				buff = ft_strjoin_char(buff, quote);
+				(*i)++;
+			}
 		}
-        if (quote && rl[*i] == quote)
-        {
-			quote = 0;
-            (*i)++;
-            continue;
-        }
-        if (!quote && ft_strchr(">|< \t$", rl[*i]))
-            break;
-        temp = ft_strjoin_char(buff, rl[*i]);
-        if (!temp)
-        {
-            free(buff);
-            return (NULL);
-        }
-        free(buff);
-        buff = temp;
-        (*i)++;
-    }
+		else
+			buff = ft_strjoin_char(buff, rl[(*i)++]);
+	}
 	return (buff);
+}
+
+static int	handle_char(t_dec *dec, char *rl, int *i)
+{
+	if (!dec->quote && (rl[*i] == '\'' || rl[*i] == '"'))
+	{
+		dec->quote = rl[(*i)++];
+		return (1);
+	}
+	if (dec->quote && rl[*i] == dec->quote)
+	{
+		dec->quote = 0;
+		(*i)++;
+		return (1);
+	}
+	if (!dec->quote && ft_strchr(">|< \t", rl[*i]))
+		return (0);
+	dec->temp = ft_strjoin_char(dec->buff, rl[(*i)++]);
+	if (!dec->temp)
+		return (0);
+	free(dec->buff);
+	dec->buff = dec->temp;
+	return (1);
+}
+
+char	*ft_handle_words(char *rl, int i)
+{
+	t_dec	dec;
+
+	dec.quote = 0;
+	dec.buff = NULL;
+	while (rl[i])
+	{
+		if (!handle_char(&dec, rl, &i))
+			break ;
+	}
+	return (dec.buff);
 }

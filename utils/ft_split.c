@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 13:43:35 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/07 13:50:04 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/08 00:09:01 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,25 +64,7 @@ static char	**free_mem(char **s, int i)
 	return (NULL);
 }
 
-size_t	ft_strlcpy(char *dst, char *src, size_t dstsize)
-{
-	size_t	src_len;
-	size_t	i;
-
-	i = 0;
-	src_len = ft_strlen(src);
-	if (dstsize == 0)
-		return (src_len);
-	while (src[i] != '\0' && i < dstsize - 1)
-	{
-		dst[i] = src[i];
-		i++;
-	}
-	dst[i] = '\0';
-	return (src_len);
-}
-
-char	**ft_split(char const *s, char *delims)
+char	**ft_split(char *s, char *delims)
 {
 	size_t		k;
 	size_t		index;

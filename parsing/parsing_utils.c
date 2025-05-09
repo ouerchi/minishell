@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 02:45:36 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:08:17 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/07 22:06:16 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_builtins_check(t_parse *par)
 {
 	if (!par || !par->cmd_name)
 		return ;
-	if (par->cmd_name && (f_strcmp(par->cmd_name, "echo") == 0)
+	if ((par->cmd_name && (f_strcmp(par->cmd_name, "echo") == 0))
 		|| f_strcmp(par->cmd_name, "cd") == 0
 		|| f_strcmp(par->cmd_name, "pwd") == 0
 		|| f_strcmp(par->cmd_name, "export") == 0
@@ -28,18 +28,18 @@ void	ft_builtins_check(t_parse *par)
 		par->builtins = 0;
 }
 
-int count_words_before_pipe(t_token *token)
+int	count_words_before_pipe(t_token *token)
 {
-    int count;
-	
+	int	count;
+
 	count = 0;
-    while (token && token->type != T_PIPE)
-    {
-        if (token->type == T_WORD || token->type == T_VARIABLE)
-            count++;
-        token = token->next;
-    }
-    return (count);
+	while (token && token->type != T_PIPE)
+	{
+		if (token->type == T_WORD)
+			count++;
+		token = token->next;
+	}
+	return (count);
 }
 
 void	handle_redirection(t_token **check, t_parse **p)

@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 20:55:11 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:09:00 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/06 23:19:22 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,24 +79,4 @@ char	*ft_strjoin(char *s1, char *s2)
 		dst = ft_strcpy(s2, dst);
 	*dst = '\0';
 	return (ptr);
-}
-
-char *ft_strncpy(char *dest, const char *src, size_t n)
-{
-    char *original_dest = dest;
-
-    while (n > 0 && *src)
-	{
-        *dest = *src;
-        dest++;
-        src++;
-        n--;
-    }
-    while (n > 0)
-	{
-        *dest = '\0';
-        dest++;
-        n--;
-    }
-    return (original_dest);
 }

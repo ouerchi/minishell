@@ -6,13 +6,13 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:58:51 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/05 14:57:20 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:47:29 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	free_env_node(t_env *env)
+static void	free_env_node(t_env *env)
 {
 	if (!env)
 		return ;
@@ -23,7 +23,7 @@ void	free_env_node(t_env *env)
 	return ;
 }
 
-void	ft_remove_env_node(t_env **head, char *var)
+static void	ft_remove_env_node(t_env **head, char *var)
 {
 	t_env	*tmp;
 	t_env	*prev;

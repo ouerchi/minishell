@@ -6,24 +6,22 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:59:18 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/04 15:43:57 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:56:56 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	print_cd_error(void)
+static void	print_cd_error(void)
 {
 	ft_putstr_fd("cd: ", 2);
 	ft_putstr_fd(strerror(errno), 2);
 	ft_putstr_fd("\n", 2);
 }
 
-int	goto_home_dir(char **env)
+static int	goto_home_dir(char **env)
 {
 	int		res;
-	char	*env_value;
-	
 	char	*env_value;
 
 	env_value = ft_getenv(env, "HOME");
@@ -41,7 +39,7 @@ int	goto_home_dir(char **env)
 	return (0);
 }
 
-int	goto_prev_dir(char **env)
+static int	goto_prev_dir(char **env)
 {
 	int	res;
 	char	*env_value;

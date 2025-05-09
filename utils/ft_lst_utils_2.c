@@ -6,84 +6,51 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 03:10:00 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:08:52 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/07 20:42:23 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
+void	ft_lstadd_back_files(t_parse **p, t_files *new)
 {
-	t_list	*head;
+	t_files	*tmp;
 
-	if (lst && new)
+	if (!new)
+		return ;
+	if (!*p)
 	{
-		if ((*lst) == NULL)
-			*lst = new;
-		else
-		{
-			head = ft_lstlast((*lst));
-			head->next = new;
-		}
+		*p = malloc(sizeof(t_parse));
+		if (!(*p))
+			return ;
+		(*p)->file = new;
+		(*p)->file->next = NULL;
+		return ;
 	}
-}
-
-void ft_lstadd_back_files(t_parse **p, t_files *new)
-{
-	t_files *tmp;
-	
-    if (!new)
-        return;
-    if (!(*p)->file)
-    {
-        (*p)->file = new;
-        return;
-    }
-    tmp = (*p)->file;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new;
+	if (!(*p)->file)
+	{
+		(*p)->file = new;
+		return ;
+	}
+	tmp = (*p)->file;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
 void	ft_lstadd_back_token(t_token **lst, t_token *new)
 {
-	t_token *tmp;
+	t_token	*tmp;
 
-    if (!new)
-        return;
-    if (!*lst)
-    {
-        *lst = new;
-        return;
-    }
-    tmp = *lst;
-    while (tmp->next)
-        tmp = tmp->next;
-    tmp->next = new;
-}
-
-void	ft_lstclear(t_list **lst, void (*del)(void *))
-{
-	t_list	*head;
-
-	if (lst && del)
+	if (!new)
+		return ;
+	if (!*lst)
 	{
-		while ((*lst) != NULL)
-		{
-			head = (*lst)->next;
-			del((*lst)->content);
-			free(*lst);
-			(*lst) = head;
-		}
-		*lst = NULL;
+		*lst = new;
+		return ;
 	}
-}
-
-t_list	*ft_lstlast(t_list *lst)
-{
-	if (!lst)
-		return (NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
+	tmp = *lst;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }

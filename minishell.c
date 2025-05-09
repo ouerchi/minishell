@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:20 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/07 14:14:17 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/09 22:07:49 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void ft_free_token_list(t_token *lst)
 
 void free_parse(t_parse *cmd)
 {
+    t_files *next_file;
     t_parse *tmp;
     int i;
 
@@ -37,38 +38,37 @@ void free_parse(t_parse *cmd)
         free(tmp->cmd_name);
         if (tmp->args)
         {
-            i = 0;
-            while (tmp->args[i])
-                free(tmp->args[i++]);
+            for (i = 0; tmp->args[i]; ++i)
+                free(tmp->args[i]);
             free(tmp->args);
         }
         while (tmp->file)
         {
+            next_file = tmp->file->next;
             free(tmp->file->name);
             free(tmp->file->type);
             free(tmp->file);
-            tmp->file = tmp->file->next;
+            tmp->file = next_file;
         }
         free(tmp);
     }
 }
 
+
 t_state_loop ft_state_loop(t_token *token, char *rl, t_config *config)
 {
-    // t_parse *cmd;
     t_error_type state;
 
-    config->cmd = parse_piped_commands(&token);
+    config->cmd = parse_piped_commands(&token, config);
     if (!config->cmd)
         return (CONTINUE);
-    state = ft_handle_error(config->cmd, rl);
+    state = ft_handle_error(rl);
     if (state == ERR_UNCLOSED_QUOTES)
         return (free_parse(config->cmd), printf("minishell: Syntax error: Unclosed quotes\n"), CONTINUE);
     else
     {
-        ft_print_list(config->cmd);
+        // ft_print_list(config->cmd);
         execution(config);
-        // free_parse(config->cmd);
         return (CONTINUE);
     }
 }
@@ -78,15 +78,14 @@ void	minishell_loop(char **env)
 	char        *rl;
     t_config    config;
 	t_token     *token;
-	t_state_loop state_loop;
     
     init_env(&config, env);
 	while(1)
     {
-        rl = readline("\x1b[32mminishell\x1b[34m-\x1b[31m$ \x1b[37m");
+        rl = readline("minishell-$ ✗ ");
 		if (!rl)
 		{
-			printf("\x1b[32mminishell\x1b[34m-\x1b[31m$ \x1b[37mexit\n");
+			printf("minishell-$ exit\n");
 		    break;
 		}
 		add_history(rl);
@@ -103,9 +102,7 @@ void	minishell_loop(char **env)
 
 int main(int argc, char **argv, char **env)
 {
-	(void)argv;
-	sig_int_handler();
-	sig_ign_handler();
+    (void)argv;
 	if (argc == 1)
 		minishell_loop(env);
     return (0);

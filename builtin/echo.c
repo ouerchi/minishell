@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:38:03 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/04/23 15:22:51 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/09 21:57:36 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void no_print(int *newline)
 		ft_putstr_fd("\n", 1);
 }
 
-void ft_echo(char *str)
+int	ft_echo(char *str)
 {
 	int i;
 	int j;
@@ -80,7 +80,7 @@ void ft_echo(char *str)
 	j = 0;
 	newline = 1;
 	if (!str)
-		return ;
+		return (1);
 	check_nl(str, &i, &j, &newline);
 	if (newline)
 		i = j;
@@ -92,11 +92,5 @@ void ft_echo(char *str)
 		i = x;
 		print(str, &i, &newline);
 	}
-	
-}
-
-
-int main()
-{
-	ft_echo("-n $HOME -n -n");
+	return (0);
 }

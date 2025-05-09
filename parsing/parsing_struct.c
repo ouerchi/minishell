@@ -6,61 +6,59 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:12:15 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 14:45:06 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/07 23:51:08 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token *ft_add_cmd(char *rl)
+t_token	*ft_add_cmd(char *rl)
 {
-	int			i;
-	char		*buff;
-	char		*var_str;
-    t_token		*lst;
-	t_variable  var;
+	int		i;
+	char	*buff;
+	t_token	*lst;
 
 	i = 0;
 	lst = NULL;
 	buff = NULL;
-    while(rl[i])
+	while (rl[i])
 	{
 		while (rl[i] == ' ' || rl[i] == '\t')
-            i++;
-		if(!rl[i])
-			break;
-		process_char(rl, &i, &lst, &var);
+			i++;
+		if (!rl[i])
+			break ;
+		process_char(rl, &i, &lst);
 	}
-    free(buff);
-	
+	free(buff);
 	return (lst);
 }
 
-t_parse	*ft_parsing(t_token **token)
+t_parse	*ft_parsing(t_token **token, t_config *config)
 {
-	int 	i;
+	int		i;
 	char	**arg;
-	t_parse *parse;
+	t_parse	*parse;
 
 	parse = ft_parse_new();
 	if (!parse)
 		return (NULL);
-	arg = ft_check_parse(token, &parse, &i);
+	config->cmd = parse;
+	arg = ft_check_parse(token, &config, &i);
 	if (!arg)
 	{
 		free(parse);
-        return (NULL);   
+		return (NULL);
 	}
 	parse->args = arg;
 	if (i > 0)
 		parse->cmd_name = ft_strdup(arg[0]);
 	else
-        parse->cmd_name = NULL;
+		parse->cmd_name = NULL;
 	ft_builtins_check(parse);
 	return (parse);
 }
 
-char	**ft_check_parse(t_token **check, t_parse **p, int *i)
+char	**ft_check_parse(t_token **check, t_config **config, int *i)
 {
 	int		size;
 	char	**arg;
@@ -74,10 +72,10 @@ char	**ft_check_parse(t_token **check, t_parse **p, int *i)
 	{
 		if ((*check)->type == T_REDIR_IN || (*check)->type == T_REDIR_OUT
 			|| (*check)->type == T_APPEND || (*check)->type == T_HERDOC)
-			handle_redirection(check, p);
-		else if ((*check)->type == T_WORD || (*check)->type == T_VARIABLE)
+			handle_redirection(check, &(*config)->cmd);
+		else if ((*check)->type == T_WORD)
 		{
-			arg[(*i)++] = ft_strdup((*check)->value);
+			arg[(*i)++] = ft_expanding((*check), *config);
 			(*check) = (*check)->next;
 		}
 		else
@@ -87,43 +85,43 @@ char	**ft_check_parse(t_token **check, t_parse **p, int *i)
 	return (arg);
 }
 
-t_parse *parse_piped_commands(t_token **token_p)
+t_parse	*parse_piped_commands(t_token **token_p, t_config *config)
 {
-    t_parse *cmd;
-	t_token *token;
+	t_parse	*cmd;
+	t_token	*token;
 
-	cmd = ft_parsing(token_p);
-    if (!cmd)
-        return (NULL);
-    token = *token_p;
-    if (token && token->type == T_PIPE)
-    {
-        *token_p = token->next;
-        cmd->next = parse_piped_commands(token_p);
-        if (!cmd->next && *token_p)
-            return (NULL);
+	cmd = ft_parsing(token_p, config);
+	if (!cmd)
+		return (NULL);
+	token = *token_p;
+	if (token && token->type == T_PIPE)
+	{
+		*token_p = token->next;
+		cmd->next = parse_piped_commands(token_p, config);
+		if (!cmd->next && *token_p)
+			return (NULL);
 	}
-    return (cmd);
+	return (cmd);
 }
 
 int validate_pipes(t_token *token)
 {
     int expect_command;
-	t_token *next_token;
+    t_token *next_token;
 
-	expect_command = 1;
+    expect_command = 1;
     while (token)
     {
-		if (token->type == T_REDIR_IN || token->type == T_REDIR_OUT || token->type == T_APPEND)
-		{
-			next_token = token->next;
-			if (!next_token)
-				return (printf("minishell: syntax error near unexpected token 'newline'\n"), 0);
-			else if (next_token->type == T_PIPE)
+        if (token->type == T_REDIR_IN || token->type == T_REDIR_OUT || token->type == T_APPEND || token->type == T_HERDOC)
+        {
+            next_token = token->next;
+            if (!next_token)
+                return (printf("minishell: syntax error near unexpected token 'newline'\n"), 0);
+            else if (next_token->type == T_PIPE)
                 return (printf("minishell: syntax error near unexpected token `|'\n"), 0);
-			else if (next_token->type == T_REDIR_IN || next_token->type == T_REDIR_OUT || next_token->type == T_APPEND)
-				return (printf("minishell: syntax error near unexpected token '%s'\n", next_token->value), 0);
-		}
+            else if (next_token->type == T_REDIR_IN || next_token->type == T_REDIR_OUT || next_token->type == T_APPEND || next_token->type == T_HERDOC)
+                return (printf("minishell: syntax error near unexpected token '%s'\n", next_token->value), 0);
+        }
         else if (token->type == T_PIPE)
         {
             if (expect_command)

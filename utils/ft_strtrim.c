@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 11:51:24 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 00:09:14 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/06 23:28:20 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int	is_in_set(char c, char *set)
 	return (0);
 }
 
-static char	*handle(char  *s)
+static char	*handle(char *s)
 {
 	if (!s)
 		return (NULL);

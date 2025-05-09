@@ -6,17 +6,17 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 15:46:03 by azaimi            #+#    #+#             */
-/*   Updated: 2025/04/11 15:46:32 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/01 15:42:37 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_print_list_2(t_token *cmd)
+void	ft_print_list_2(t_token *token)
 {
 	t_token *tmp;
 	
-	tmp = cmd;
+	tmp = token;
 	while (tmp)
     {
         if (tmp->value)
@@ -40,13 +40,14 @@ void ft_print_list(t_parse *cmd)
     {
 		node_count++;
         printf("Node %d: ", node_count);
-        i = 0;
+        
         if (tmp->cmd_name)
             printf("%s -- ", tmp->cmd_name);
         else
             printf("(no command) -- ");
-        if (tmp->args) 
+        if (tmp->args)
         {
+            i = 0;
             while (tmp->args[i])
             {
                 printf("%s ", tmp->args[i]);
