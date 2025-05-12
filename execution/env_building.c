@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 15:38:47 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 21:50:28 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:30:13 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,7 @@ void	free_array(char **arr)
 	free(arr);
 }
 
-void	update_env(t_config *config)
+void	update_env_array(t_config *config)
 {
 	char	**new_env;
 	new_env = lst_to_array(config->env_lst);
@@ -329,27 +329,26 @@ void	check_env(t_config *config)
 	char	*tmp;
 	int		shell_level;
 	if (!ft_getenv(config->env, "PATH"))
-	ft_setenv(config, "PATH",
+		ft_setenv(config, "PATH",
 		ft_strdup("/usr/gnu/bin:/usr/local/bin:/bin:/usr/bin:."));
-		if (!ft_getenv(config->env, "SHLVL"))
+	if (!ft_getenv(config->env, "SHLVL"))
 		ft_setenv(config, "SHLVL", ft_strdup("1"));
-		else
-		{
-			tmp = ft_getenv(config->env, "SHLVL");
-			shell_level = ft_atoi(tmp) + 1;
-			tmp = ft_itoa(shell_level);
+	else
+	{
+		tmp = ft_getenv(config->env, "SHLVL");
+		shell_level = ft_atoi(tmp) + 1;
+		tmp = ft_itoa(shell_level);
 		ft_setenv(config, "SHLVL", tmp);
 	}
 	if (!ft_getenv(config->env, "_"))
-	ft_setenv(config, "_", ft_strdup("/usr/bin/env"));
+		ft_setenv(config, "_", ft_strdup("/usr/bin/env"));
 	if (!ft_getenv(config->env, "PWD"))
 	{
 		tmp = NULL;
 		tmp = getcwd(tmp, 0);
 		ft_setenv(config, "PWD", ft_strdup(tmp));
 	}
-	update_env(config);
-
+	update_env_array(config);
 }
 
 void	init_env(t_config *config, char **env)

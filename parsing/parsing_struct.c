@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_struct.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:12:15 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/07 23:51:08 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/12 17:40:41 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,7 @@ char	**ft_check_parse(t_token **check, t_config **config, int *i)
 			arg[(*i)++] = ft_expanding((*check), *config);
 			(*check) = (*check)->next;
 		}
-		else
-			(*check) = (*check)->next;
+		(*check) = (*check)->next;
 	}
 	arg[*i] = NULL;
 	return (arg);

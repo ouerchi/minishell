@@ -6,7 +6,7 @@ void	error_handling(char *cmd, char *msg)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(msg, 2);
 	ft_putstr_fd("\n", 2);
-	exit(1);
+	exit(127);
 }
 
 // void	free_array(char **str)

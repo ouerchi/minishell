@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 20:05:13 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 22:34:55 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:34:30 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ static int	run_builtins_rest(t_config *config)
 	if (!ft_strncmp(cmd->args[0], "unset", ft_strlen(cmd->args[0])))
 	{
 		status = ft_unset(config, cmd->args);
-		update_env(config);
+		update_env_array(config);
 	}
 	else if (!ft_strncmp(cmd->args[0], "pwd", ft_strlen(cmd->args[0])))
 		status = ft_pwd(config);
@@ -237,11 +237,12 @@ int	run_builtins(t_config *config)
 int	check_cmd_type(t_config *config)
 {
 	t_parse	*cmd;
+	int		status;
 
 	cmd = config->cmd;
 	if (cmd->builtins)
 		return (run_builtins(config));
-	int status = spawn_child_process(config, cmd);
+	status = spawn_child_process(config, cmd);
 	parent(config);
 	return (status);
 }
@@ -249,6 +250,7 @@ int	check_cmd_type(t_config *config)
 int	execution(t_config *config)
 {
 	int cmd_nmbr;
+	int	status;
 	t_parse		*current_cmd;
 
 	init_process(config);
@@ -260,10 +262,10 @@ int	execution(t_config *config)
 	current_cmd = config->cmd;
 	while (current_cmd && config->cmd_idx < cmd_nmbr)
 	{
-		spawn_child_process(config, current_cmd);
+		status = spawn_child_process(config, current_cmd);
 		current_cmd = current_cmd->next;
 		config->cmd_idx++;
 	}
 	parent(config);
-	return (0);
+	return (status);
 }
