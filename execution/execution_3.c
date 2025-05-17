@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 20:34:07 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/17 15:38:27 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/17 20:21:52 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,12 @@ int	check_option(char **args)
 	return (1);
 }
 
-int	run_builtins_rest(t_config *config)
+int	run_builtins_rest(t_config *config, t_parse *cmd)
 {
 	int		status;
 	// char	*cwd;
-	t_parse	*cmd;
 
 	// cwd = NULL;
-	cmd = config->cmd;
 	status = 0;
 	if (!ft_strncmp(cmd->args[0], "unset", ft_strlen(cmd->args[0])))
 	{
@@ -99,7 +97,6 @@ int	spawn_child_process(t_config *config, t_parse *cmd)
 		if (pipe(config->pipe) == -1)
 		perror("pipe cmd");
 	}
-	
 	pid = fork();
 	if (pid == -1)
 	{

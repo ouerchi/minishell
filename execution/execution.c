@@ -6,25 +6,19 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 20:05:13 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/16 20:18:07 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/17 20:22:47 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// void	redirect_io(t_config *config, t_parse *cmd)
-// {
-	
-// }
-
-void	run_child_process(t_config *config, t_parse *cmd)
+void	redirect_io(t_config *config, t_parse *cmd)
 {
-	// redirect_io(config, cmd);
 	if (cmd->next)
 	{
 		close(config->pipe[0]);
 		if (dup2(config->pipe[1], STDOUT_FILENO) == -1)
-			perror("dup2-----");
+			perror("dup2");
 		close(config->pipe[1]);
 	}
 	if (config->saved_fd != -1)
@@ -45,9 +39,14 @@ void	run_child_process(t_config *config, t_parse *cmd)
 			perror("dup2");
 		close(cmd->outfile);
 	}
+}
+
+void	run_child_process(t_config *config, t_parse *cmd)
+{
+	redirect_io(config, cmd);
 	if (cmd->builtins == 1)
 	{
-		run_builtins(config);
+		run_builtins(config, cmd);
 		exit(0) ;
 	}
 	execute_cmd(config, cmd);
@@ -88,13 +87,11 @@ static int	open_files(t_parse *head_cmd)
 	return (0);
 }
 
-int	run_builtins(t_config *config)
+int	run_builtins(t_config *config, t_parse *cmd)
 {
-	t_parse	*cmd;
 	char	*tmp;
 	int		status;
 
-	cmd = config->cmd;
 	if (!ft_strncmp(cmd->args[0], "exit", ft_strlen(cmd->args[0])))
 		status = ft_exit(cmd->args);
 	else if (!ft_strncmp(cmd->args[0], "echo", ft_strlen(cmd->args[0])))
@@ -109,7 +106,7 @@ int	run_builtins(t_config *config)
 		update_env_array(config);
 	}
 	else
-		status = run_builtins_rest(config);
+		status = run_builtins_rest(config, cmd);
 	return (status);
 }
 
@@ -147,7 +144,7 @@ int	run_single_cmd(t_config *config)
 		config->std_in = dup(STDIN_FILENO);
 		config->std_out = dup(STDOUT_FILENO);
 		apply_redir(cmd);
-		status = run_builtins(config);
+		status = run_builtins(config, cmd);
 		restore_redir(config);
 		return (status);
 	}

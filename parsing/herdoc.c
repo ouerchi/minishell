@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 15:47:03 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/17 15:43:17 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/17 18:50:05 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	ft_if(t_token *token)
 
 int	extra_her(t_token *token, t_her *her)
 {
-	her->val = validate_pipes_her(token, &her->count_per);
+	her->val = validate_pipes_her(token, her);
 	if (her->val == 1 && ft_find_her(token) > 16)
 		return (printf("minishell: maximum here-document count exceeded\n"), 0);
 	else if (her->val == 0 && her->count_per > 16)
@@ -76,7 +76,7 @@ int	extra_her(t_token *token, t_her *her)
 	return (1);
 }
 
-int	hna_her(char *del, t_config *config, t_token *token)
+int	hna_her(t_config *config, t_token *token, int *flag)
 {
 	t_her	her;
 
@@ -87,20 +87,26 @@ int	hna_her(char *del, t_config *config, t_token *token)
 	her.fd = open("her", O_CREAT | O_APPEND | O_RDWR, 777);
 	her.fd_beg = open("her", O_CREAT | O_APPEND | O_RDWR, 777);
 	// unlink("her");
-	her.rl_her = readline("> ");
-	while (her.count_per--)
+	(*flag) = 1;
+	while (token)
 	{
-		while (her.rl_her)
+		if (token->next && token->type == T_HERDOC && token->next->type == T_WORD)
 		{
-			if (has_q(del) == 0)
-				her.flag = 1;
-			her.temp = ft_handle_words_her(del);
-			if (!f_strcmp(her.rl_her, her.temp))
-				break ;
-			her.check = ft_expanding_her(her.rl_her, config, &her.flag);
-			write(her.fd, her.check, ft_strlen(her.check));
 			her.rl_her = readline("> ");
+			while (her.rl_her)
+			{
+				if (has_q(token->next->exp) == 0)
+					her.flag = 1;
+				her.temp = ft_handle_words_her(token->next->exp);
+				if (ft_strcmp_her(her.rl_her, her.temp) == INT_MIN || !ft_strcmp_her(her.rl_her, her.temp))
+					break ;
+				her.check = ft_expanding_her(her.rl_her, config, &her.flag);
+				write(her.fd, her.check, ft_strlen(her.check));
+				her.rl_her = readline("> ");
+			}
+			her.flag = 0;
 		}
+		token = token->next;
 	}
 	return (1);
 }

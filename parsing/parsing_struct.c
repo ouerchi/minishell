@@ -6,30 +6,27 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 16:12:15 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/11 17:00:39 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/17 15:34:12 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*ft_add_cmd(char *rl)
+t_token	*ft_add_cmd(char *rl, t_config *config)
 {
 	int		i;
-	char	*buff;
 	t_token	*lst;
 
 	i = 0;
 	lst = NULL;
-	buff = NULL;
 	while (rl[i])
 	{
 		while (rl[i] == ' ' || rl[i] == '\t')
 			i++;
 		if (!rl[i])
 			break ;
-		process_char(rl, &i, &lst);
+		process_char(rl, &i, &lst, config);
 	}
-	free(buff);
 	return (lst);
 }
 
@@ -72,10 +69,10 @@ char	**ft_check_parse(t_token **check, t_config **config, int *i)
 	{
 		if ((*check)->type == T_REDIR_IN || (*check)->type == T_REDIR_OUT
 			|| (*check)->type == T_APPEND || (*check)->type == T_HERDOC)
-			handle_redirection(check, &(*config)->cmd);
+			handle_redirection(check, &(*config)->cmd, (*config));
 		else if ((*check)->type == T_WORD)
 		{
-			arg[(*i)++] = ft_word((*check), *config);
+			arg[(*i)++] = ft_strdup((*check)->value);
 			(*check) = (*check)->next;
 		}
 		else
@@ -104,40 +101,27 @@ t_parse	*parse_piped_commands(t_token **token_p, t_config *config)
 	return (cmd);
 }
 
-int validate_pipes(t_token *token, t_config *config)
+int	ft_ambi(t_token *token, t_config *config, int count, int count_2)
 {
-    int		expect_command;
-    t_token *next_token;
+	t_token	*tok;
 
-    expect_command = 1;
-    while (token)
-    {
-		if (token->next && token->type == T_HERDOC && token->next->type == T_WORD)
+	while (token && token->next)
+	{
+		if (token->next
+			&& (token->type == T_REDIR_IN || token->type == T_REDIR_OUT
+				|| token->type == T_APPEND)
+			&& token->next->type == T_WORD
+			&& (config->amb > 1 || config->flag_2 == 1))
 		{
-			if (hna_her(token->next->value, config, token) == 0)
-				return (-1);
+			tok = token->next;
+			count = 1;
 		}
-        if (token->type == T_REDIR_IN || token->type == T_REDIR_OUT || token->type == T_APPEND || token->type == T_HERDOC)
-        {
-            next_token = token->next;
-            if (!next_token)
-                return (printf("minishell: syntax error near unexpected token 'newline'\n"), 0);
-            else if (next_token->type == T_PIPE)
-                return (printf("minishell: syntax error near unexpected token `|'\n"), 0);
-            else if (next_token->type == T_REDIR_IN || next_token->type == T_REDIR_OUT || next_token->type == T_APPEND || next_token->type == T_HERDOC)
-                return (printf("minishell: syntax error near unexpected token '%s'\n", next_token->value), 0);
-        }
-        else if (token->type == T_PIPE)
-        {
-            if (expect_command)
-                return (printf("minishell: syntax error near unexpected token `|'\n"), 0);
-            expect_command = 1;
-        }
-        else
-            expect_command = 0;
-        token = token->next;
-    }
-    if (expect_command)
-        return (printf("minishell: syntax error: unexpected end of file\n"), 0);
-    return (1);
+		while (token && token->next && token->type != T_PIPE)
+			token = token->next;
+		print_amb(tok, &count, &count_2);
+		token = token->next;
+	}
+	config->flag_2 = 0;
+	config->amb = 0;
+	return (count_2);
 }

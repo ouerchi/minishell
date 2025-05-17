@@ -6,36 +6,37 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 16:46:04 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/13 18:40:08 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/17 00:59:43 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_queen(t_token *check, t_config *config, t_exp exp, t_q q)
+char	*ft_queen(char *buff, t_config *config, t_exp exp, t_q q)
 {
-	exp.flag = has_q(check->value);
-	exp.count = ft_calc_dol(check->value, 0) % 2;
-	if (exp.flag == 1 && exp.count == 1 && !has_doll_2(check->value))
+	exp.count = ft_calc_dol(buff, 0) % 2;
+	if (has_q(buff) == 1 && exp.count == 1 && !has_doll_2(buff))
 		return (ft_strdup("$"));
-	while (check->value[exp.j])
+	while (buff[exp.j])
 	{
-		if (check->value[exp.j] == '\'' || check->value[exp.j] == '"')
-			exp.res = second(check, exp, &exp.j, &q);
-		else if (q.single_q == 0 && check->value[exp.j] == '$'
-			&& is_numeric_char(check->value, exp.j + 1))
+		if (buff[exp.j] == '\'' || buff[exp.j] == '"')
+			exp.res = second(buff, exp, &exp.j, &q);
+		else if (q.single_q == 0 && buff[exp.j] == '$'
+			&& is_numeric_char(buff, exp.j + 1))
 			exp.j += 2;
-		else if (check->value[exp.j] == '$' && (check->value[exp.j + 1] == '\''
-				|| check->value[exp.j + 1] == '"') && q.single_q == 0
+		else if (buff[exp.j] == '$' && (buff[exp.j + 1] == '\''
+				|| buff[exp.j + 1] == '"') && q.single_q == 0
 			&& q.double_q == 0)
 			exp.j++;
-		else if (check->value[exp.j] == '$' && check->value[exp.j + 1] == '\0')
-			exp.res = ft_strjoin_char(exp.res, check->value[exp.j++]);
-		else if (check->value[exp.j] == '$' && check->value[exp.j + 1] != '\''
-			&& check->value[exp.j + 1] != '"' && q.single_q == 0)
-			exp.res = third(check, config, exp, &exp.j);
+		else if (buff[exp.j] == '$' && buff[exp.j + 1] == '\0')
+			exp.res = ft_strjoin_char(exp.res, buff[exp.j++]);
+		else if (buff[exp.j] == '$' && buff[exp.j + 1] != '\''
+			&& buff[exp.j + 1] != '"' && q.single_q == 0
+			&& (ft_isalnum(buff[exp.j + 1]) || buff[exp.j + 1] == '_'
+				|| buff[exp.j + 1] == '$'))
+			exp.res = third(buff, config, exp, &exp.j);
 		else
-			exp.res = ft_strjoin_char(exp.res, check->value[exp.j++]);
+			exp.res = ft_strjoin_char(exp.res, buff[exp.j++]);
 	}
 	return (exp.res);
 }

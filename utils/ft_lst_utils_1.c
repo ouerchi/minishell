@@ -6,13 +6,13 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 01:18:57 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/10 16:12:56 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/17 15:28:36 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*ft_token_new(t_token_type type, void *content)
+t_token	*ft_token_new(t_token_type type, void *content, void *content_2)
 {
 	t_token	*new;
 
@@ -23,12 +23,16 @@ t_token	*ft_token_new(t_token_type type, void *content)
 		new->value = ft_strdup(content);
 	else
 		new->value = NULL;
+	if (content_2)
+		new->exp = ft_strdup(content_2);
+	else
+		new->exp = NULL;
 	new->type = type;
 	new->next = NULL;
 	return (new);
 }
 
-t_files	*ft_files_new(char *name, char *type)
+t_files	*ft_files_new(char *name, char *type, int fd_her)
 {
 	t_files	*file;
 
@@ -37,6 +41,7 @@ t_files	*ft_files_new(char *name, char *type)
 		return (NULL);
 	file->name = ft_strdup(name);
 	file->type = ft_strdup(type);
+	file->fd_her = fd_her;
 	file->next = NULL;
 	return (file);
 }

@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 02:45:36 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/13 18:40:53 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/17 15:36:52 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	count_words_before_pipe(t_token *token)
 	return (count);
 }
 
-void	handle_redirection(t_token **check, t_parse **p)
+void	handle_redirection(t_token **check, t_parse **p, t_config *config)
 {
 	t_token_type	type;
 
@@ -51,13 +51,13 @@ void	handle_redirection(t_token **check, t_parse **p)
 	if (!*check)
 		return ;
 	if (type == T_REDIR_IN)
-		ft_lstadd_back_files(p, ft_files_new((*check)->value, "REDIR_IN"));
+		ft_lstadd_back_files(p, ft_files_new((*check)->value, "REDIR_IN", -101));
 	else if (type == T_REDIR_OUT)
-		ft_lstadd_back_files(p, ft_files_new((*check)->value, "REDIR_OUT"));
+		ft_lstadd_back_files(p, ft_files_new((*check)->value, "REDIR_OUT", 101));
 	else if (type == T_APPEND)
-		ft_lstadd_back_files(p, ft_files_new((*check)->value, "APPEND"));
+		ft_lstadd_back_files(p, ft_files_new((*check)->value, "APPEND", -101));
 	else if (type == T_HERDOC)
-		ft_lstadd_back_files(p, ft_files_new((*check)->value, "HERDOC"));
+		ft_lstadd_back_files(p, ft_files_new((*check)->value, "HERDOC", config->fd_her));
 	*check = (*check)->next;
 }
 
@@ -75,4 +75,14 @@ int	ft_find_her(t_token *token)
 		temp = temp->next;
 	}
 	return (count_her);
+}
+
+void	print_amb(t_token *tok, int *count, int *count_2)
+{
+	if ((*count) == 1)
+	{
+		(*count) = 0;
+		(*count_2) = 1;
+		printf("minishell: %s: ambiguous redirect\n", tok->exp);
+	}
 }

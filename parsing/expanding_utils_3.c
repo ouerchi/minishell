@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 00:24:18 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/13 19:04:50 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/14 21:08:03 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,16 @@ int	has_doll_2(char *str)
 	return (1);
 }
 
-char	*second(t_token *check, t_exp exp, int *j, t_q *quotes)
+char	*second(char *buff, t_exp exp, int *j, t_q *quotes)
 {
-	exp.temp = merge_temp(check->value, j, NULL, quotes);
+	exp.temp = merge_temp(buff, j, NULL, quotes);
 	exp.res = ft_strjoin_free(exp.res, exp.temp);
 	return (exp.res);
 }
 
-char	*third(t_token *check, t_config *config, t_exp exp, int *j)
+char	*third(char *buff, t_config *config, t_exp exp, int *j)
 {
-	exp.temp_var = ft_handle_name(check->value, j);
+	exp.temp_var = ft_handle_name(buff, j);
 	exp.temp_val = ft_search_lst(config, exp.temp_var);
 	exp.res = ft_strjoin_free(exp.res, exp.temp_val);
 	free(exp.temp_var);

@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 00:26:42 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/10 16:12:12 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/17 01:04:00 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	sig_int_handle(int sig)
 
 void	sig_ign_handler(void)
 {
-	struct	sigaction s;
+	struct sigaction	s;
 
 	sigemptyset(&s.sa_mask);
 	s.sa_flags = 0;
@@ -33,7 +33,7 @@ void	sig_ign_handler(void)
 
 void	sig_int_handler(void)
 {
-	struct	sigaction s;
+	struct sigaction	s;
 
 	sigemptyset(&s.sa_mask);
 	s.sa_flags = 0;

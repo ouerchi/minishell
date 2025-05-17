@@ -1,0 +1,8 @@
+-> fd of herdoc
+-> trim of export
+-> signals
+-> pustr_fd instead of printf
+-> exit status
+-> leaks
+-> norm
+-> tests

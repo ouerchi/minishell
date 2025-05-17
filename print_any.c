@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 15:46:03 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/13 21:04:30 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/16 22:29:18 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_print_list_2(t_token *token)
 	while (tmp)
     {
         if (tmp->value)
-            printf("%s -- %d\n", tmp->value, tmp->type);
+            printf("%s -- %s -- %d\n", tmp->value, tmp->exp, tmp->type);
         else
             printf("(null) -- %d\n", tmp->type);
         tmp = tmp->next;
