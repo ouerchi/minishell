@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:26 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/12 17:31:14 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/17 17:13:38 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,22 @@
 # include <stdbool.h>
 # include <errno.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # define _POSIX_C_SOURCE 200809L
 # define _XOPEN_SOURCE 700
 # define CD_HOME 0
+
+typedef struct s_her
+{
+	int		fd;
+	int		val;
+	int		flag;
+	int		fd_beg;
+	int		count_per;
+	char	*temp;
+	char	*check;
+	char	*rl_her;
+}	t_her;
 
 typedef struct s_dec
 {
@@ -39,9 +52,13 @@ typedef struct s_dec
 
 typedef struct s_exp
 {
+	int			j;
+	int			flag;
 	int			count;
 	char		*res;
 	char		*temp;
+	char		*name;
+	char		*temp_res;
 	char		*temp_var;
 	char		*temp_val;
 }	t_exp;
@@ -90,11 +107,11 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-typedef struct s_quotes
+typedef struct s_q
 {
 	int	single_q;
 	int	double_q;
-}	t_quotes;
+}	t_q;
 
 typedef struct s_token
 {
@@ -148,6 +165,8 @@ typedef struct s_config
 	int		pipe[2];
 	int		cmd_idx;
 	char	*path;
+	int		std_in;
+	int		std_out;
 }	t_config;
 
 int				is_numeric(char *str);
@@ -184,7 +203,7 @@ void			ft_print_list(t_parse *cmd);
 size_t			ft_strlen(char *str);
 char			*ft_strtrim(char *s1, char *set);
 void			ft_print_list_2(t_token *cmd);
-int				validate_pipes(t_token *token);
+int				validate_pipes(t_token *token, t_config *config);
 char			*ft_strchr(char *s, int c);
 char			*ft_strcpy(char *dest, char *src);
 char			*ft_substr(char *s, unsigned int start, size_t len);
@@ -192,7 +211,7 @@ void			handle_redirection(t_token **check, t_parse **p);
 void			process_char(char *rl, int *i, t_token **lst);
 void			ft_putchar_fd(char c, int fd);
 void			ft_putstr_fd(char *s, int fd);
-char			*ft_expanding(t_token *check, t_config *config);
+char			*ft_expanding(t_token *check, t_config *config, int flag);
 char			*ft_handle_buff(char *rl, int *i);
 void			init_env(t_config *config, char **env);
 char			*trim_free(char *str);
@@ -207,8 +226,6 @@ char			**ft_split_var(char *variable);
 char			*ft_itoa(int n);
 int				ft_atoi(const char *str);
 char			*ft_search_lst(t_config *config, char *buff);
-char			*skip_char(char *str, char set);
-char			*ft_handle_no_in_q(t_config *config, t_token *check, int j);
 int				is_numeric_char(char *str, int i);
 int				is_alpha_char(char *str, int i);
 int				ft_isalnum(int ch);
@@ -216,16 +233,15 @@ int				ft_isdigit(int ch);
 int				ft_isalpha(int ch);
 char			*ft_strjoin_free(char *s1, char *s2);
 void			*ft_memcpy(void *dest, const void *src, size_t n);
-char			*ft_exp_par(char *buff, t_config *config, t_token *check);
-char			*ft_handle_num_dol(char *buff, int *i);
 char			*ft_handle_name(char *buff, int *i);
-char			*ft_handle_num_dol(char *buff, int *i);
 int				ft_calc_dol(char *buff, int i);
-void			ft_quotes_exp(char *buff, int *i, t_quotes *quotes);
-char			*merge_temp(char *buff, int *i, char *temp, t_quotes *quotes);
+void			ft_quotes_exp(char *buff, int *i, t_q *quotes);
+char			*merge_temp(char *buff, int *i, char *temp, t_q *quotes);
 char			**ft_split(char *s, char *delims);
 size_t			ft_strlcpy(char *dst, char *src, size_t dstsize);
-
+void			execute_cmd(t_config *config, t_parse *cmd);
+int				hna_her(char *del, t_config *config, t_token *token);
+int				handle_char(t_dec *dec, char *rl, int *i);
 int				execution(t_config *config);
 void			execute_cmd(t_config *config, t_parse *cmd);
 int				spawn_child_process(t_config *config, t_parse *cmd);
@@ -234,11 +250,44 @@ void			check_env(t_config *config);
 void			update_env_array(t_config *config);
 void			free_array(char **arr);
 char			**lst_to_array(t_env *env_lst);
-int 			ft_cd(char *path, char **env);
+int				ft_cd(char *path, char **env);
 int				ft_exit(char **arg);
 int				ft_unset(t_config *config, char **args);
 int				ft_pwd(t_config *config);
 int				ft_env(t_env *env_lst);
 int				ft_echo(char *str);
+int				ft_find_her(t_token *token);
+int				validate_pipes_her(t_token *token, int *count_per);
+char			*ft_word(t_token *check, t_config *config);
+int				has_doll(char *str);
+char			*ft_strchr_q(char *s, int c, int c_2);
+int				has_q(char *str);
+char			*ft_handle_name_her(char *buff, int *i);
+char			*ft_queen(t_token *check, t_config *config, t_exp exp, t_q q);
+char			*second(t_token *check, t_exp exp, int *j, t_q *quotes);
+char			*third(t_token *check, t_config *config, t_exp exp, int *j);
+void			init_queen(t_exp *exp, t_q *quotes);
+int				has_doll_2(char *str);
+int				ft_if(t_token *token);
+void			ft_setenv(t_config *config, char *name, char *value);
+int				redir_in(t_parse *cmd, char *file_name);
+int				redir_out(t_parse *cmd, char *file_name);
+int				redir_append(t_parse *cmd, char *file_name);
+char			*array_join(char **str);
+int				run_builtins_rest(t_config *config);
+void			parent(t_config *config);
+void			init_process(t_config *config);
+int				ft_cmd_nmbr(t_parse *cmd_lst);
+void			run_child_process(t_config *config, t_parse *cmd);
+int				check_toprint(char *str, int *i);
+void			safe_close(int *fd);
+int				ft_export(t_config *config, char **args);
+
+void			msg_error(char *msg1, char *full, char *msg2);
+int				is_directory(char *str);
+int				is_file(char *str);
+int				is_path(char *str);
+char			*find_path_2(char *cmd_name);
+char			*find_path(char *cmd_name, char **env);
 
 #endif

@@ -6,17 +6,15 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 08:38:03 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 21:57:36 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/14 17:09:16 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-
-
-static void check_nl(char *str, int *i, int *j, int *newline)
+static void	check_nl(char *str, int *i, int *j, int *newline)
 {
-	while(str[(*i)] && str[(*i)] == ' ')
+	while (str[(*i)] && str[(*i)] == ' ')
 		(*i)++;
 	while (str[(*i)] && str[(*i)] == '-' && str[(*i) + 1] == 'n')
 	{
@@ -24,7 +22,7 @@ static void check_nl(char *str, int *i, int *j, int *newline)
 		(*i)++;
 		while (str[(*i)] && str[(*i)] == 'n')
 			(*i)++;
-		if ((str[(*i)] && str[(*i)] == ' ') || !str[(*i)])
+		if ((str[(*i)] && str[(*i)] == ' ') ||!str[(*i)])
 			*newline = 0;
 		else
 		{
@@ -33,17 +31,17 @@ static void check_nl(char *str, int *i, int *j, int *newline)
 		}
 		while (str[(*i)] && str[(*i)] == ' ')
 			(*i)++;
-		
 	}
 	return ;
 }
 
-static int check_toPrint(char *str, int *i)
+int	check_toprint(char *str, int *i)
 {
-	while (str[(*i)] && str[(*i)] == '-' && str[(*i) + 1] == 'n')
+	if (str[(*i)] && str[(*i)] == '-' && str[(*i) + 1] == 'n')
 	{
 		(*i)++;
-		while ((str[(*i)] && str[(*i)] == 'n') || (str[(*i)] && str[(*i)] == ' '))
+		while ((str[(*i)] && str[(*i)] == 'n')
+			|| (str[(*i)] && str[(*i)] == ' '))
 			(*i)++;
 		if (!str[*i])
 			return (0);
@@ -51,7 +49,7 @@ static int check_toPrint(char *str, int *i)
 	return (1);
 }
 
-static void print(char *str, int *i, int *newline)
+static	void	print(char *str, int *i, int *newline)
 {
 	if (!*newline)
 		ft_putstr_fd(str + (*i), 1);
@@ -61,7 +59,8 @@ static void print(char *str, int *i, int *newline)
 		ft_putstr_fd("\n", 1);
 	}
 }
-static void no_print(int *newline)
+
+static	void	no_print(int *newline)
 {
 	if (!*newline)
 		ft_putstr_fd("", 1);
@@ -71,10 +70,10 @@ static void no_print(int *newline)
 
 int	ft_echo(char *str)
 {
-	int i;
-	int j;
-	int x;
-	int newline;
+	int	i;
+	int	j;
+	int	x;
+	int	newline;
 
 	i = 0;
 	j = 0;
@@ -85,7 +84,7 @@ int	ft_echo(char *str)
 	if (newline)
 		i = j;
 	x = i;
-	if (!check_toPrint(str, &i))
+	if (!check_toprint(str, &i))
 		no_print(&newline);
 	else
 	{

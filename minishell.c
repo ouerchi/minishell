@@ -6,104 +6,82 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 23:55:20 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/12 17:36:26 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/16 15:14:52 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void ft_free_token_list(t_token *lst)
+t_state_loop	ft_state_loop(t_token *token, t_config *config)
 {
-    t_token *tmp;
-
-    while (lst)
-    {
-        tmp = lst;
-        lst = lst->next;
-        free(tmp->value);
-        free(tmp);
-    }
+	config->cmd = parse_piped_commands(&token, config);
+	if (!config->cmd)
+		return (CONTINUE);
+	else
+	{
+		execution(config);
+		return (CONTINUE);
+	}
 }
 
-void free_parse(t_parse *cmd)
+int	ft_break(t_token *token, t_config *config)
 {
-    t_files *next_file;
-    t_parse *tmp;
-    int i;
+	int	val;
 
-    while (cmd)
-    {
-        tmp = cmd;
-        cmd = cmd->next;
-        free(tmp->cmd_name);
-        if (tmp->args)
-        {
-            for (i = 0; tmp->args[i]; ++i)
-                free(tmp->args[i]);
-            free(tmp->args);
-        }
-        while (tmp->file)
-        {
-            next_file = tmp->file->next;
-            free(tmp->file->name);
-            free(tmp->file->type);
-            free(tmp->file);
-            tmp->file = next_file;
-        }
-        free(tmp);
-    }
+	val = validate_pipes(token, config);
+	if (val == 1 || val == -1)
+	{
+		if (ft_state_loop(token, config) == BREAK)
+			return (0);
+		if (val == -1)
+			return (0);
+	}
+	return (1);
 }
 
-
-t_state_loop ft_state_loop(t_token *token, char *rl, t_config *config)
+int	ft_continue(char *rl)
 {
-    t_error_type state;
+	t_error_type	state;
 
-    config->cmd = parse_piped_commands(&token, config);
-    if (!config->cmd)
-        return (CONTINUE);
-    state = ft_handle_error(rl);
-    if (state == ERR_UNCLOSED_QUOTES)
-        return (free_parse(config->cmd), printf("minishell: Syntax error: Unclosed quotes\n"), CONTINUE);
-    else
-    {
-        // ft_print_list(config->cmd);
-        execution(config);
-        return (CONTINUE);
-    }
+	state = ft_handle_error(rl);
+	if (state == ERR_UNCLOSED_QUOTES)
+	{
+		printf("minishell: Syntax error: Unclosed quotes\n");
+		return (0);
+	}
+	return (1);
 }
 
 void	minishell_loop(char **env)
 {
-	char        *rl;
-    t_config    config;
-	t_token     *token;
-    
-    init_env(&config, env);
-	while(1)
-    {
-        rl = readline("minishell-$ ✗ ");
+	char		*rl;
+	t_config	config;
+	t_token		*token;
+
+	init_env(&config, env);
+	while (1)
+	{
+		rl = readline("minishell-$ ✗ ");
 		if (!rl)
 		{
 			printf("minishell-$ exit\n");
-		    break;
+			break ;
 		}
 		add_history(rl);
+		if (ft_continue(rl) == 0)
+			continue ;
 		token = ft_add_cmd(rl);
-		if (validate_pipes(token))
-		{
-            if (ft_state_loop(token, rl, &config) == BREAK)
-                break;
-		}
+		if (ft_break(token, &config) == 0)
+			break ;
 		ft_free_token_list(token);
 		free(rl);
 	}
 }
 
-int main(int argc, char **argv, char **env)
+int	main(int argc, char **argv, char **env)
 {
-    (void)argv;
+	(void)argv;
 	if (argc == 1)
 		minishell_loop(env);
-    return (0);
+	return (0);
 }

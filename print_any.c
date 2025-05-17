@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 15:46:03 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/01 15:42:37 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/13 21:04:30 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,13 @@ void ft_print_list(t_parse *cmd)
     t_parse *tmp;
 	int node_count;
 	t_files *file_tmp;
-    
+
     tmp = cmd;
 	node_count = 0;
     while (tmp)
     {
 		node_count++;
         printf("Node %d: ", node_count);
-        
         if (tmp->cmd_name)
             printf("%s -- ", tmp->cmd_name);
         else

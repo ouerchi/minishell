@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 23:23:31 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/07 16:21:09 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/10 16:12:08 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*ft_handle_buff(char *rl, int *i)
 	return (buff);
 }
 
-static int	handle_char(t_dec *dec, char *rl, int *i)
+int	handle_char(t_dec *dec, char *rl, int *i)
 {
 	if (!dec->quote && (rl[*i] == '\'' || rl[*i] == '"'))
 	{

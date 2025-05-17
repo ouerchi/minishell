@@ -6,51 +6,93 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 16:46:04 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/06 23:57:48 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/13 18:40:08 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	*ft_exp_par(char *buff, t_config *config, t_token *check)
+char	*ft_queen(t_token *check, t_config *config, t_exp exp, t_q q)
 {
-	char	*value;
-	char	*temp;
-
-	value = ft_search_lst(config, buff + 1);
-	if (value)
-		temp = ft_strdup(value);
-	else
-		temp = ft_strdup(check->value);
-	return (temp);
+	exp.flag = has_q(check->value);
+	exp.count = ft_calc_dol(check->value, 0) % 2;
+	if (exp.flag == 1 && exp.count == 1 && !has_doll_2(check->value))
+		return (ft_strdup("$"));
+	while (check->value[exp.j])
+	{
+		if (check->value[exp.j] == '\'' || check->value[exp.j] == '"')
+			exp.res = second(check, exp, &exp.j, &q);
+		else if (q.single_q == 0 && check->value[exp.j] == '$'
+			&& is_numeric_char(check->value, exp.j + 1))
+			exp.j += 2;
+		else if (check->value[exp.j] == '$' && (check->value[exp.j + 1] == '\''
+				|| check->value[exp.j + 1] == '"') && q.single_q == 0
+			&& q.double_q == 0)
+			exp.j++;
+		else if (check->value[exp.j] == '$' && check->value[exp.j + 1] == '\0')
+			exp.res = ft_strjoin_char(exp.res, check->value[exp.j++]);
+		else if (check->value[exp.j] == '$' && check->value[exp.j + 1] != '\''
+			&& check->value[exp.j + 1] != '"' && q.single_q == 0)
+			exp.res = third(check, config, exp, &exp.j);
+		else
+			exp.res = ft_strjoin_char(exp.res, check->value[exp.j++]);
+	}
+	return (exp.res);
 }
 
-char	*ft_handle_no_in_q(t_config *config, t_token *check, int j)
+void	ft_quotes_exp(char *buff, int *i, t_q *quotes)
 {
-	char	*buff;
-	char	*temp;
-	char	*temp_2;
+	if (buff[(*i)] == '"' && quotes->double_q == 1)
+	{
+		quotes->double_q = 0;
+		(*i)++;
+	}
+	else if (buff[(*i)] == '"' && quotes->double_q == 0
+		&& quotes->single_q == 0)
+	{
+		quotes->double_q = 1;
+		(*i)++;
+	}	
+	else if (buff[(*i)] == '\'' && quotes->single_q == 1)
+	{
+		quotes->single_q = 0;
+		(*i)++;
+	}
+	else if (buff[(*i)] == '\'' && quotes->single_q == 0
+		&& quotes->double_q == 0)
+	{
+		quotes->single_q = 1;
+		(*i)++;
+	}
+}
 
-	buff = ft_handle_words(check->value, j);
-	if (check->value[0] == '$'
-		&& (check->value[1] == '\'' || check->value[1] == '"'))
+char	*merge_temp(char *buff, int *i, char *temp, t_q *quotes)
+{
+	while (buff[(*i)] == '"' || buff[(*i)] == '\'')
 	{
-		temp_2 = skip_char(buff, '$');
-		temp = ft_strdup(temp_2);
-		return (temp);
+		ft_quotes_exp(buff, i, quotes);
+		if (quotes->double_q == 1)
+		{
+			while (buff[(*i)] && buff[(*i)] != '"' && buff[(*i)] == '\'')
+				temp = ft_strjoin_char(temp, buff[(*i)++]);
+			if (buff[(*i)] == '"')
+			{
+				(*i)++;
+				quotes->double_q = 0;
+			}
+		}
+		else if (quotes->single_q == 1)
+		{
+			while (buff[(*i)] && buff[(*i)] != '\'' && buff[(*i)] == '"')
+				temp = ft_strjoin_char(temp, buff[(*i)++]);
+			if (buff[(*i)] == '\'')
+			{
+				(*i)++;
+				quotes->single_q = 0;
+			}
+		}
 	}
-	else if (check->value[0] == '\'' && check->value[1] == '$')
-	{
-		temp = ft_strdup(buff);
-		return (temp);
-	}
-	else if (check->value[0] == '"' && check->value[1] == '$')
-	{
-		temp = ft_exp_par(buff, config, check);
-		return (temp);
-	}
-	else
-		return (NULL);
+	return (temp);
 }
 
 char	*ft_search_lst(t_config *config, char *buff)
@@ -68,24 +110,4 @@ char	*ft_search_lst(t_config *config, char *buff)
 		}
 	}
 	return (NULL);
-}
-
-int	ft_calc_dol(char *buff, int i)
-{
-	int	count;
-
-	count = 0;
-	while (buff[i] && buff[i++] == '$')
-		count++;
-	return (count);
-}
-
-char	*skip_char(char *str, char set)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i] == set)
-		i++;
-	return (str + i);
 }

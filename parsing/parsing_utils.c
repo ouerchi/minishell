@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 02:45:36 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/07 22:06:16 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/13 18:40:53 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,20 @@ void	handle_redirection(t_token **check, t_parse **p)
 	else if (type == T_HERDOC)
 		ft_lstadd_back_files(p, ft_files_new((*check)->value, "HERDOC"));
 	*check = (*check)->next;
+}
+
+int	ft_find_her(t_token *token)
+{
+	t_token	*temp;
+	int		count_her;
+
+	temp = token;
+	count_her = 0;
+	while (temp)
+	{
+		if (temp->next && temp->type == T_HERDOC)
+			count_her++;
+		temp = temp->next;
+	}
+	return (count_her);
 }

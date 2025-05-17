@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:59:18 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 21:56:56 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/13 20:17:19 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	goto_home_dir(char **env)
 
 static int	goto_prev_dir(char **env)
 {
-	int	res;
+	int		res;
 	char	*env_value;
 
 	env_value = ft_getenv(env, "OLDPWD");
@@ -59,7 +59,7 @@ static int	goto_prev_dir(char **env)
 	return (0);
 }
 
-int ft_cd(char *path, char **env)
+int	ft_cd(char *path, char **env)
 {
 	char	*cwd;
 	int		cd_rtrn;
@@ -67,11 +67,8 @@ int ft_cd(char *path, char **env)
 	if (!path)
 		return (goto_home_dir(env));
 	cwd = getcwd(NULL, 0);
-	if (!cwd && ft_strcmp(path, "..") )
-	{
-		
+	if (!cwd && ft_strcmp(path, ".."))
 		return (-1);
-	}
 	if (ft_strcmp(path, "-") == 0)
 		cd_rtrn = goto_prev_dir(env);
 	else
@@ -81,13 +78,12 @@ int ft_cd(char *path, char **env)
 		{
 			free(cwd);
 			print_cd_error();
-			return(1);
+			return (1);
 		}
 	}
 	free(cwd);
 	return (0);
 }
-
 
 // int main()
 // {

@@ -6,7 +6,7 @@
 /*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 23:57:18 by azaimi            #+#    #+#             */
-/*   Updated: 2025/05/06 23:58:42 by azaimi           ###   ########.fr       */
+/*   Updated: 2025/05/13 18:35:15 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,22 @@ char	*ft_handle_name(char *buff, int *i)
 
 	temp = NULL;
 	(*i)++;
-	while (buff[(*i)] && (ft_isalnum(buff[(*i)]) || buff[(*i)] == '_'))
-		temp = ft_strjoin_char(temp, buff[(*i)++]);
+	if (buff[(*i)] && buff[(*i)] == '$')
+		(*i)++;
+	else
+	{
+		while (buff[(*i)] && (ft_isalnum(buff[(*i)]) || buff[(*i)] == '_'))
+			temp = ft_strjoin_char(temp, buff[(*i)++]);
+	}
 	return (temp);
 }
 
-char	*ft_handle_num_dol(char *buff, int *i)
+char	*ft_handle_name_her(char *buff, int *i)
 {
 	char	*temp;
 
 	temp = NULL;
-	(*i) += 2;
+	(*i)++;
 	while (buff[(*i)] && (ft_isalnum(buff[(*i)]) || buff[(*i)] == '_'))
 		temp = ft_strjoin_char(temp, buff[(*i)++]);
 	return (temp);
@@ -73,4 +78,18 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	while (n--)
 		*d++ = *s++;
 	return (dest);
+}
+
+int	has_doll(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '$')
+			return (0);
+		i++;
+	}
+	return (1);
 }

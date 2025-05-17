@@ -1,0 +1,18 @@
+# DONT NEED TRIM
+$> export HOLA=" bonjour hey "
+$> echo wesh"$HOLA" | cat -e
+
+
+# NEED TRIM
+$> export HOLA=bonjour
+$> export HOLA=" hola et $HOLA"
+$> echo $HOLA
+
+
+# check command name if directory before get_path
+# stat() | lstat()
+
+if the path is unseted, look for the command in the current directory
+
+ctrl + c = SIGINT ???
+ctrl + d = SIGQUIT ???

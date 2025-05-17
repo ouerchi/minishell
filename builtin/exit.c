@@ -3,32 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 10:27:46 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 21:45:49 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/13 20:01:10 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int ft_isdigits(char *str)
+static int	ft_isdigits(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str[i] && (str[i] == '+' || str[i] == '-'))
 		i++;
 	if (!str[i])
 		return (0);
-	while(str[i] && ft_isdigit(str[i]))
+	while (str[i] && ft_isdigit(str[i]))
 		i++;
 	return (!str[i]);
 }
 
 int	ft_exit(char **arg)
 {
-	int exit_status;
+	int	exit_status;
+
 	if (!arg[1])
 	{
 		ft_putstr_fd("exit\n", 2);
@@ -54,4 +55,3 @@ int	ft_exit(char **arg)
 	// free_all;
 	exit(exit_status);
 }
-

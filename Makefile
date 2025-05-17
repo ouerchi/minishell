@@ -6,7 +6,10 @@ SRC = error/ft_err_handle_2.c error/ft_error_handling.c execution/env_building.c
 	parsing/expanding.c parsing/parsing_struct.c parsing/parsing_utils.c parsing/quotes_handle.c parsing/tokenization.c \
 	utils/ft_char.c utils/ft_itoa.c utils/ft_lst_utils_1.c utils/ft_lst_utils_2.c utils/ft_putstr_fd.c utils/ft_strcmp.c \
 	utils/ft_strdup.c utils/ft_strtrim.c minishell.c print_any.c execution/exec.c execution/execution.c utils/ft_split.c \
-	builtin/cd.c builtin/echo.c builtin/env.c builtin/exit.c builtin/pwd.c builtin/unset.c
+	builtin/cd.c builtin/echo.c builtin/env.c builtin/exit.c builtin/pwd.c builtin/unset.c builtin/export.c parsing/herdoc.c parsing/expanding_utils_3.c \
+	parsing/herdoc_2.c execution/execution_2.c execution/execution_3.c execution/env_building_2.c execution/env_building_3.c \
+	execution/env_building_4.c execution/path_utils.c free.c
+
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

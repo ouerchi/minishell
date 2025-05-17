@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: azaimi <azaimi@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 17:58:51 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/09 21:47:29 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/13 19:59:35 by azaimi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static void	ft_remove_env_node(t_env **head, char *var)
 	prev = NULL;
 	while (tmp)
 	{
-		if ((ft_strlen(var) == ft_strlen(tmp->name)) && !ft_strncmp(tmp->name, var, ft_strlen(var)))
+		if ((ft_strlen(var) == ft_strlen(tmp->name))
+			&& !ft_strncmp(tmp->name, var, ft_strlen(var)))
 		{
 			if (!prev)
 				*head = tmp->next;

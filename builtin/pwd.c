@@ -6,7 +6,7 @@
 /*   By: mouerchi <mouerchi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 10:15:26 by mouerchi          #+#    #+#             */
-/*   Updated: 2025/05/10 14:55:34 by mouerchi         ###   ########.fr       */
+/*   Updated: 2025/05/16 20:30:48 by mouerchi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_pwd(t_config *config)
 {
-	char *cwd;
+	char	*cwd;
 
 	cwd = NULL;
 	cwd = getcwd(NULL, 0);
